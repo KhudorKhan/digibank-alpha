@@ -1,0 +1,43 @@
+@startuml DigiBank Use Case Diagram
+
+left to right direction
+
+actor "Resident" as Resident
+actor "Admin/City Controller" as Admin
+actor "Fiat Payment Provider" as FiatProvider
+actor "Crypto Network" as CryptoNetwork
+actor "Smart City Service" as CityService
+actor "Security Authority" as Security
+
+rectangle "DigiBank System" {
+    Resident --> (Login)
+    Resident --> (Register)
+    Resident --> (View Account Balance)
+    Resident --> (Pay with Fiat)
+    Resident --> (Pay with Crypto)
+    Resident --> (View Transaction History)
+    Resident --> (Receive Notifications)
+    
+    Admin --> (Login)
+    Admin --> (Monitor System Metrics)
+    Admin --> (View Audit Logs)
+    Admin --> (Manage Users)
+    Admin --> (View All Transactions)
+    
+    (Pay with Fiat) --> FiatProvider : "Process Payment"
+    (Pay with Crypto) --> CryptoNetwork : "Process Payment"
+    
+    (Pay with Fiat) --> CityService : "Notify Service"
+    (Pay with Crypto) --> CityService : "Notify Service"
+    
+    (Pay with Fiat) --> Security : "Audit Log"
+    (Pay with Crypto) --> Security : "Audit Log"
+    (Login) --> Security : "Audit Log"
+    
+    (Receive Notifications) <-- (Pay with Fiat) : "Notify"
+    (Receive Notifications) <-- (Pay with Crypto) : "Notify"
+}
+
+@enduml
+
+

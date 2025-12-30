@@ -1,0 +1,246 @@
+@startuml DigiBank Class Diagram
+
+package "Model" {
+    class User {
+        -Long id
+        -String username
+        -String email
+        -String password
+        -UserRole role
+        -LocalDateTime createdAt
+        -LocalDateTime lastLogin
+    }
+    
+    class Account {
+        -Long id
+        -BigDecimal fiatBalance
+        -BigDecimal cryptoBalance
+        -LocalDateTime createdAt
+        -LocalDateTime updatedAt
+    }
+    
+    class Transaction {
+        -Long id
+        -PaymentType paymentType
+        -ServiceType serviceType
+        -BigDecimal amount
+        -TransactionStatus status
+        -String cryptoNetwork
+        -String transactionHash
+        -LocalDateTime timestamp
+    }
+    
+    class AuditLog {
+        -Long id
+        -Long userId
+        -AuditEventType eventType
+        -String action
+        -String details
+        -LocalDateTime timestamp
+    }
+    
+    User "1" --> "1" Account
+    User "1" --> "*" Transaction
+}
+
+package "Patterns - Singleton" {
+    class CityController {
+        -AtomicLong totalTransactions
+        -AtomicLong totalRevenue
+        -LocalDateTime systemStartTime
+        -boolean systemActive
+        +getInstance() : CityController
+        +incrementTransactionCount()
+        +addRevenue(long)
+        +getTotalTransactions() : long
+        +getTotalRevenue() : long
+    }
+    note right of CityController : Singleton Pattern\nCentral system controller
+}
+
+package "Patterns - Command" {
+    interface PaymentCommand {
+        +execute() : Transaction
+        +undo()
+        +canExecute() : boolean
+    }
+    
+    class FiatPaymentCommand {
+        -PaymentService paymentService
+        -User user
+        -Account account
+        -BigDecimal amount
+        +execute() : Transaction
+        +undo()
+        +canExecute() : boolean
+    }
+    
+    class CryptoPaymentCommand {
+        -PaymentService paymentService
+        -User user
+        -Account account
+        -BigDecimal amount
+        -String cryptoNetwork
+        +execute() : Transaction
+        +undo()
+        +canExecute() : boolean
+    }
+    
+    PaymentCommand <|.. FiatPaymentCommand
+    PaymentCommand <|.. CryptoPaymentCommand
+    note right of PaymentCommand : Command Pattern\nEncapsulates payment requests
+}
+
+package "Patterns - Observer" {
+    interface NotificationObserver {
+        +update(Transaction)
+        +getObserverType() : String
+    }
+    
+    class EmailNotificationObserver {
+        +update(Transaction)
+        +getObserverType() : String
+    }
+    
+    class SecurityAlertObserver {
+        +update(Transaction)
+        +getObserverType() : String
+    }
+    
+    class NotificationSubject {
+        -List<NotificationObserver> observers
+        +registerObserver(NotificationObserver)
+        +removeObserver(NotificationObserver)
+        +notifyObservers(Transaction)
+    }
+    
+    NotificationObserver <|.. EmailNotificationObserver
+    NotificationObserver <|.. SecurityAlertObserver
+    NotificationSubject "1" o-- "*" NotificationObserver
+    note right of NotificationObserver : Observer Pattern\nEvent notifications
+}
+
+package "Patterns - Adapter" {
+    interface CryptoPaymentAdapter {
+        +processPayment(String, BigDecimal, String) : String
+        +verifyTransaction(String, String) : boolean
+        +getNetworkName() : String
+    }
+    
+    class EthereumAdapter {
+        +processPayment(String, BigDecimal, String) : String
+        +verifyTransaction(String, String) : boolean
+        +getNetworkName() : String
+    }
+    
+    class BitcoinAdapter {
+        +processPayment(String, BigDecimal, String) : String
+        +verifyTransaction(String, String) : boolean
+        +getNetworkName() : String
+    }
+    
+    class PolygonAdapter {
+        +processPayment(String, BigDecimal, String) : String
+        +verifyTransaction(String, String) : boolean
+        +getNetworkName() : String
+    }
+    
+    class CryptoAdapterFactory {
+        +getAdapter(String) : CryptoPaymentAdapter
+    }
+    
+    CryptoPaymentAdapter <|.. EthereumAdapter
+    CryptoPaymentAdapter <|.. BitcoinAdapter
+    CryptoPaymentAdapter <|.. PolygonAdapter
+    CryptoAdapterFactory ..> CryptoPaymentAdapter : creates
+    note right of CryptoPaymentAdapter : Adapter Pattern\nMulti-blockchain integration
+}
+
+package "Patterns - Template Method" {
+    abstract class SecurityCheckTemplate {
+        #validateUser(User) : boolean
+        #checkAccountStatus(User) : boolean
+        #validateAmount(BigDecimal) : boolean
+        #performCustomChecks(User, BigDecimal) : boolean
+        +performSecurityCheck(User, BigDecimal) : boolean
+    }
+    
+    class PaymentSecurityCheck {
+        #validateUser(User) : boolean
+        #checkAccountStatus(User) : boolean
+        #validateAmount(BigDecimal) : boolean
+        #performCustomChecks(User, BigDecimal) : boolean
+    }
+    
+    SecurityCheckTemplate <|-- PaymentSecurityCheck
+    note right of SecurityCheckTemplate : Template Method Pattern\nStandardized security checks
+}
+
+package "Services" {
+    class PaymentService {
+        -AccountRepository accountRepository
+        -TransactionRepository transactionRepository
+        -NotificationSubject notificationSubject
+        -PaymentSecurityCheck securityCheck
+        +processFiatPayment(...) : Transaction
+        +processCryptoPayment(...) : Transaction
+    }
+    
+    class AuthService {
+        -UserRepository userRepository
+        -JwtService jwtService
+        +login(String, String) : String
+        +register(...) : User
+        +validateToken(String) : User
+    }
+    
+    class AccountService {
+        -AccountRepository accountRepository
+        +getOrCreateAccount(User) : Account
+        +getAccountByUserId(Long) : Account
+    }
+    
+    class AuditService {
+        -AuditLogRepository auditLogRepository
+        +logPayment(...)
+        +logSecurityEvent(...)
+        +logAuthentication(...)
+    }
+}
+
+package "Controllers" {
+    class AuthController {
+        +register(RegisterRequest) : ResponseEntity
+        +login(LoginRequest) : ResponseEntity
+    }
+    
+    class PaymentController {
+        +payFiat(PaymentRequest) : ResponseEntity
+        +payCrypto(PaymentRequest) : ResponseEntity
+    }
+    
+    class TransactionController {
+        +getTransactions() : ResponseEntity
+        +getTransaction(Long) : ResponseEntity
+    }
+    
+    class MetricsController {
+        +getMetrics() : ResponseEntity
+        +getLogs() : ResponseEntity
+    }
+}
+
+PaymentController --> PaymentService
+PaymentController --> PaymentCommand
+PaymentService --> NotificationSubject
+PaymentService --> CryptoPaymentAdapter
+PaymentService --> SecurityCheckTemplate
+PaymentService --> CityController
+AuthController --> AuthService
+TransactionController --> TransactionRepository
+MetricsController --> CityController
+MetricsController --> AuditLogRepository
+
+@enduml
+
+
