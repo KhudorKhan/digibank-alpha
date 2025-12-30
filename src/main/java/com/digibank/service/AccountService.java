@@ -3,15 +3,16 @@ package com.digibank.service;
 import com.digibank.model.Account;
 import com.digibank.model.User;
 import com.digibank.repository.AccountRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
 @Service
-@Slf4j
 public class AccountService {
+    private static final Logger log = LoggerFactory.getLogger(AccountService.class);
     @Autowired
     private AccountRepository accountRepository;
 

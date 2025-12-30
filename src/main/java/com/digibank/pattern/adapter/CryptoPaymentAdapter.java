@@ -1,6 +1,7 @@
 package com.digibank.pattern.adapter;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
@@ -17,8 +18,8 @@ public interface CryptoPaymentAdapter {
 /**
  * Ethereum Adapter
  */
-@Slf4j
 class EthereumAdapter implements CryptoPaymentAdapter {
+    private static final Logger log = LoggerFactory.getLogger(EthereumAdapter.class);
     @Override
     public String processPayment(String walletAddress, BigDecimal amount, String network) {
         log.info("Processing Ethereum payment: {} ETH to {}", amount, walletAddress);
@@ -41,8 +42,8 @@ class EthereumAdapter implements CryptoPaymentAdapter {
 /**
  * Bitcoin Adapter
  */
-@Slf4j
 class BitcoinAdapter implements CryptoPaymentAdapter {
+    private static final Logger log = LoggerFactory.getLogger(BitcoinAdapter.class);
     @Override
     public String processPayment(String walletAddress, BigDecimal amount, String network) {
         log.info("Processing Bitcoin payment: {} BTC to {}", amount, walletAddress);
@@ -65,8 +66,8 @@ class BitcoinAdapter implements CryptoPaymentAdapter {
 /**
  * Polygon Adapter
  */
-@Slf4j
 class PolygonAdapter implements CryptoPaymentAdapter {
+    private static final Logger log = LoggerFactory.getLogger(PolygonAdapter.class);
     @Override
     public String processPayment(String walletAddress, BigDecimal amount, String network) {
         log.info("Processing Polygon payment: {} MATIC to {}", amount, walletAddress);
@@ -85,23 +86,4 @@ class PolygonAdapter implements CryptoPaymentAdapter {
         return "POLYGON";
     }
 }
-
-/**
- * Adapter Factory
- */
-@Slf4j
-public class CryptoAdapterFactory {
-    public static CryptoPaymentAdapter getAdapter(String network) {
-        return switch (network.toUpperCase()) {
-            case "ETH", "ETHEREUM" -> new EthereumAdapter();
-            case "BTC", "BITCOIN" -> new BitcoinAdapter();
-            case "MATIC", "POLYGON" -> new PolygonAdapter();
-            default -> {
-                log.warn("Unknown network {}, defaulting to Ethereum", network);
-                yield new EthereumAdapter();
-            }
-        };
-    }
-}
-
 

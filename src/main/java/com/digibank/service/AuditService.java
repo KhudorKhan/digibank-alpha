@@ -3,13 +3,14 @@ package com.digibank.service;
 import com.digibank.model.AuditLog;
 import com.digibank.model.Transaction;
 import com.digibank.repository.AuditLogRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
 public class AuditService {
+    private static final Logger log = LoggerFactory.getLogger(AuditService.class);
     @Autowired
     private AuditLogRepository auditLogRepository;
 

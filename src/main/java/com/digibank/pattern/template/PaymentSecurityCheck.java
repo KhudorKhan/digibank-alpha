@@ -1,7 +1,8 @@
 package com.digibank.pattern.template;
 
 import com.digibank.model.User;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -10,8 +11,8 @@ import java.math.BigDecimal;
  * Concrete Template Method: Payment-specific security checks
  */
 @Component
-@Slf4j
 public class PaymentSecurityCheck extends SecurityCheckTemplate {
+    private static final Logger log = LoggerFactory.getLogger(PaymentSecurityCheck.class);
     private static final BigDecimal MAX_TRANSACTION_AMOUNT = new BigDecimal("10000");
     private static final BigDecimal MIN_TRANSACTION_AMOUNT = new BigDecimal("0.01");
 

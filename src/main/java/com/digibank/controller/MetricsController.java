@@ -6,7 +6,8 @@ import com.digibank.model.User;
 import com.digibank.pattern.singleton.CityController;
 import com.digibank.repository.AuditLogRepository;
 import com.digibank.service.AuthService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/metrics")
-@Slf4j
 public class MetricsController {
+    private static final Logger log = LoggerFactory.getLogger(MetricsController.class);
     @Autowired
     private AuthService authService;
 

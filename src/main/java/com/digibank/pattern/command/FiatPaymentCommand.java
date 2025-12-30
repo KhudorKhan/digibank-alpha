@@ -4,16 +4,12 @@ import com.digibank.model.Account;
 import com.digibank.model.Transaction;
 import com.digibank.model.User;
 import com.digibank.service.PaymentService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.math.BigDecimal;
 
 /**
  * Concrete Command: Fiat payment implementation
  */
-@Data
-@AllArgsConstructor
 public class FiatPaymentCommand implements PaymentCommand {
     private PaymentService paymentService;
     private User user;
@@ -21,6 +17,16 @@ public class FiatPaymentCommand implements PaymentCommand {
     private BigDecimal amount;
     private Transaction.ServiceType serviceType;
     private String description;
+
+    public FiatPaymentCommand(PaymentService paymentService, User user, Account account, 
+                              BigDecimal amount, Transaction.ServiceType serviceType, String description) {
+        this.paymentService = paymentService;
+        this.user = user;
+        this.account = account;
+        this.amount = amount;
+        this.serviceType = serviceType;
+        this.description = description;
+    }
 
     @Override
     public Transaction execute() {

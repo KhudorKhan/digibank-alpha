@@ -1,7 +1,8 @@
 package com.digibank.pattern.template;
 
 import com.digibank.model.User;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
@@ -9,8 +10,8 @@ import java.math.BigDecimal;
  * Template Method Pattern: Defines skeleton of security check algorithm
  * Subclasses implement specific steps
  */
-@Slf4j
 public abstract class SecurityCheckTemplate {
+    private static final Logger log = LoggerFactory.getLogger(SecurityCheckTemplate.class);
     /**
      * Template method - defines the algorithm structure
      */

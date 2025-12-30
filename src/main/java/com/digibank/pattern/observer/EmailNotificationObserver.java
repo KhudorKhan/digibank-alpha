@@ -1,15 +1,16 @@
 package com.digibank.pattern.observer;
 
 import com.digibank.model.Transaction;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
  * Concrete Observer: Email notification service
  */
 @Component
-@Slf4j
 public class EmailNotificationObserver implements NotificationObserver {
+    private static final Logger log = LoggerFactory.getLogger(EmailNotificationObserver.class);
     @Override
     public void update(Transaction transaction) {
         String message = String.format(

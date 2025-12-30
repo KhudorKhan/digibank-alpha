@@ -1,7 +1,6 @@
 package com.digibank.pattern.singleton;
 
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -12,7 +11,6 @@ import java.util.concurrent.atomic.AtomicLong;
  * Ensures only one instance exists throughout the application lifecycle
  */
 @Component
-@Getter
 public class CityController {
     private static volatile CityController instance;
     private final AtomicLong totalTransactions = new AtomicLong(0);
@@ -77,6 +75,14 @@ public class CityController {
 
     public void setSystemActive(boolean active) {
         this.systemActive = active;
+    }
+
+    public LocalDateTime getSystemStartTime() {
+        return systemStartTime;
+    }
+
+    public void setSystemStartTime(LocalDateTime systemStartTime) {
+        this.systemStartTime = systemStartTime;
     }
 }
 

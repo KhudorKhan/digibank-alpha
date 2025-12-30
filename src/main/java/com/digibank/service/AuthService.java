@@ -2,7 +2,8 @@ package com.digibank.service;
 
 import com.digibank.model.User;
 import com.digibank.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +11,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@Slf4j
 public class AuthService {
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     @Autowired
     private UserRepository userRepository;
 

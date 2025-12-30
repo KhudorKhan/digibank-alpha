@@ -4,16 +4,12 @@ import com.digibank.model.Account;
 import com.digibank.model.Transaction;
 import com.digibank.model.User;
 import com.digibank.service.PaymentService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.math.BigDecimal;
 
 /**
  * Concrete Command: Crypto payment implementation
  */
-@Data
-@AllArgsConstructor
 public class CryptoPaymentCommand implements PaymentCommand {
     private PaymentService paymentService;
     private User user;
@@ -22,6 +18,18 @@ public class CryptoPaymentCommand implements PaymentCommand {
     private String cryptoNetwork;
     private Transaction.ServiceType serviceType;
     private String description;
+
+    public CryptoPaymentCommand(PaymentService paymentService, User user, Account account,
+                               BigDecimal amount, String cryptoNetwork, 
+                               Transaction.ServiceType serviceType, String description) {
+        this.paymentService = paymentService;
+        this.user = user;
+        this.account = account;
+        this.amount = amount;
+        this.cryptoNetwork = cryptoNetwork;
+        this.serviceType = serviceType;
+        this.description = description;
+    }
 
     @Override
     public Transaction execute() {

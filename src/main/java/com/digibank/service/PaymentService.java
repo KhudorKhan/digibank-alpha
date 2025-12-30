@@ -10,7 +10,8 @@ import com.digibank.pattern.singleton.CityController;
 import com.digibank.pattern.template.PaymentSecurityCheck;
 import com.digibank.repository.AccountRepository;
 import com.digibank.repository.TransactionRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 @Service
-@Slf4j
 public class PaymentService {
+    private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
     @Autowired
     private AccountRepository accountRepository;
 
